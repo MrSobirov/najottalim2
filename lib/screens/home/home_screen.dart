@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController controller = TextEditingController();
+    TextEditingController searchController = TextEditingController();
     int page = 1;
     bool reachBottom = false;
     return BlocProvider(
@@ -26,20 +26,21 @@ class HomeScreen extends StatelessWidget {
           if(state is HomeLoading) {
             return Scaffold(
               appBar: AppBar(
+                titleSpacing: 0,
                 title: Container(
                   width: double.infinity,
-                  height: 40.h,
+                  height: 35.h,
+                  padding: EdgeInsets.only(left: 8.w),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: TextField(
-                    controller: controller,
+                    controller: searchController,
                     decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.search),
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.clear),
-                        onPressed: () {},
+                        onPressed: null,
                       ),
                       hintText: 'Search...',
                       border: InputBorder.none,
@@ -80,29 +81,37 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              drawer: AppDrawer(),
+              drawer: AppDrawer(cubitCTX),
             );
-          } else if (state is HomeLoaded){
+          } else if (state is HomeLoaded) {
+            bool emptyResult = CacheKeys.engUzb ? CachedModels.engUzbModel.isEmpty : CachedModels.uzbEngModel.isEmpty;
             return Scaffold(
               appBar: AppBar(
+                titleSpacing: 0,
                 title: Container(
                   width: double.infinity,
-                  height: 40.h,
+                  height: 35.h,
+                  padding: EdgeInsets.only(left: 8.w),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: TextField(
-                    controller: controller,
+                    controller: searchController,
                     decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.search),
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.clear),
-                        onPressed: () {},
+                        onPressed: () async {
+                          searchController.clear();
+                          await BlocProvider.of<HomeCubit>(cubitCTX).getWords("", 1);
+                        },
                       ),
                       hintText: 'Search...',
                       border: InputBorder.none,
                     ),
+                    onChanged: (String text) async {
+                      await BlocProvider.of<HomeCubit>(cubitCTX).getWords(text, 1);
+                    },
                   ),
                 ),
                 actions: [
@@ -130,6 +139,7 @@ class HomeScreen extends StatelessWidget {
                       bool saved = await StorageService().saveBool(key: "engUzb", value: !CacheKeys.engUzb);
                       if(saved) {
                         CacheKeys.engUzb = !CacheKeys.engUzb;
+                        searchController.clear();
                         MyWidgets().showToast("Language is changed to ${CacheKeys.engUzb ? "english" : "uzbek"}", isError: false);
                         await BlocProvider.of<HomeCubit>(cubitCTX).getWords("", 1);
                       }
@@ -152,10 +162,10 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              drawer: AppDrawer(),
+              drawer: AppDrawer(cubitCTX),
               body: Column(
                 children: [
-                  Expanded(
+                  if(!emptyResult) Expanded(
                     child: NotificationListener<ScrollNotification>(
                       onNotification: (scrollEnd) {
                         var metrics = scrollEnd.metrics;
@@ -164,7 +174,7 @@ class HomeScreen extends StatelessWidget {
                             if(state.loadMore && !state.loading && !reachBottom) {
                               reachBottom = true;
                               page++;
-                              BlocProvider.of<HomeCubit>(cubitCTX).getWords(controller.text, page);
+                              BlocProvider.of<HomeCubit>(cubitCTX).getWords(searchController.text, page);
                             }
                           }
                         }
@@ -211,6 +221,16 @@ class HomeScreen extends StatelessWidget {
                           );
                         },
                       ),
+                    ),
+                  ),
+                  if(emptyResult) Center(
+                    child: Column(
+                      children: [
+                        SizedBox(height: 100.h),
+                        Text("Word is not found!", style: TextStyle(fontSize: 30.sp)),
+                        SizedBox(height: 20.h),
+                        Icon(Icons.search_off_sharp, size: 80.w)
+                      ],
                     ),
                   ),
                   if(state.loading) Text(

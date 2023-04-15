@@ -29,7 +29,7 @@ class DBService {
       } else {
         print("Opening existing database");
       }
-      CachedModels.database = await openDatabase(path, readOnly: true);
+      CachedModels.database = await openDatabase(path);
       return true;
     } catch(error, stacktrace) {
       debugPrint("Databasing opening error: $error, $stacktrace");
@@ -38,7 +38,9 @@ class DBService {
   }
 
   Future<bool?> getEngUzb(String word, int page) async {
-    if(page != 1) {
+    if(page == 1) {
+      CachedModels.engUzbModel.clear();
+    } else {
       page += 30;
     }
     try{
@@ -58,7 +60,9 @@ class DBService {
   }
 
   Future<bool?> getUzbEng(String word, int page) async {
-    if(page != 1) {
+    if(page == 1) {
+      CachedModels.uzbEngModel.clear();
+    } else {
       page += 30;
     }
     try{
@@ -77,7 +81,9 @@ class DBService {
   }
 
   Future<bool?> getDefinition(String word, int page) async {
-    if(page != 1) {
+    if(page == 1) {
+      CachedModels.definitionModel.clear();
+    } else {
       page += 30;
     }
     try{

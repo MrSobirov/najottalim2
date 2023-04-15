@@ -1,10 +1,15 @@
 import 'package:dictionary/screens/add_word_screen.dart';
-import 'package:dictionary/screens/choose_language.dart';
 import 'package:dictionary/utils/my_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../services/cache_values.dart';
+import '../services/storage_service.dart';
+import 'home/home_cubit.dart';
 
 class AppDrawer extends StatelessWidget {
-  const AppDrawer({Key? key}) : super(key: key);
+  final BuildContext homeCubitCTX;
+  const AppDrawer(this.homeCubitCTX, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +28,14 @@ class AppDrawer extends StatelessWidget {
           ListTile(
               leading: const Icon(Icons.change_circle_outlined),
               title: const Text('Change Language'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChooseLanguage(),
-                  ),
-                );
+              onTap: () async {
+                bool saved = await StorageService().saveBool(key: "engUzb", value: !CacheKeys.engUzb);
+                if(saved) {
+                  CacheKeys.engUzb = !CacheKeys.engUzb;
+                  MyWidgets().showToast("Language is changed to ${CacheKeys.engUzb ? "english" : "uzbek"}", isError: false);
+                  Navigator.pop(context);
+                  await BlocProvider.of<HomeCubit>(homeCubitCTX).getWords("", 1);
+                }
               }),
           MyWidgets().divider(),
           ListTile(
