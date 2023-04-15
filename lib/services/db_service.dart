@@ -45,7 +45,6 @@ class DBService {
     }
     try{
       if(CachedModels.database != null) {
-        print((await CachedModels.database!.query('sqlite_master', columns: ['type', 'name'])));
         sqlResponse = await CachedModels.database!.rawQuery("SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY _id) AS RowNum, * FROM eng_uzb WHERE eng_uzb.eng like '%$word%') AS RowConstrainedResult WHERE RowNum >= $page AND RowNum < ${page+30} ORDER BY RowNum");
         CachedModels.engUzbModel.addAll(engUzbModelFromJson(sqlResponse));
         return sqlResponse.isNotEmpty;

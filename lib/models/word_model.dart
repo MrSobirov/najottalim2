@@ -1,8 +1,3 @@
-// To parse this JSON data, do
-//
-//     final wordModel = wordModelFromJson(jsonString);
-
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 List<WordModel> wordModelFromJson(String str) => List<WordModel>.from(json.decode(str).map((x) => WordModel.fromJson(x)));

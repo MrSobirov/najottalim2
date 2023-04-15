@@ -1,18 +1,14 @@
-import 'package:dictionary/screens/definition/definition_screen.dart';
-import 'package:dictionary/screens/drawer.dart';
-import 'package:dictionary/screens/home/home_cubit.dart';
 import 'package:dictionary/services/cache_values.dart';
-import 'package:dictionary/services/storage_service.dart';
 import 'package:dictionary/utils/my_dialogs.dart';
-import 'package:dictionary/utils/my_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../details_screen.dart';
+import 'definition_cubit.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class DefinitionScreen extends StatelessWidget {
+  const DefinitionScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +16,11 @@ class HomeScreen extends StatelessWidget {
     int page = 1;
     bool reachBottom = false;
     return BlocProvider(
-      create: (ctx1) => HomeCubit()..getWords("", 1),
-      child: BlocBuilder<HomeCubit, HomeState>(
+      create: (ctx1) => DefinitionCubit()..getWords("", 1),
+      child: BlocBuilder<DefinitionCubit, DefinitionState>(
         builder: (cubitCTX, state) {
           reachBottom = false;
-          if(state is HomeLoading) {
+          if(state is DefinitionLoading) {
             return Scaffold(
               appBar: AppBar(
                 titleSpacing: 0,
@@ -65,27 +61,10 @@ class HomeScreen extends StatelessWidget {
                       color: Colors.blue,
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    alignment: Alignment.center,
-                    width: 30.w,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                    ),
-                    child: Icon(
-                      Icons.change_circle_outlined,
-                      color: Colors.blue,
-                    ),
-                  ),
                 ],
               ),
-              drawer: AppDrawer(cubitCTX),
             );
-          } else if (state is HomeLoaded) {
-            bool emptyResult = CacheKeys.engUzb ? CachedModels.engUzbModel.isEmpty : CachedModels.uzbEngModel.isEmpty;
+          } else if (state is DefinitionLoaded) {
             return Scaffold(
               appBar: AppBar(
                 titleSpacing: 0,
@@ -104,14 +83,14 @@ class HomeScreen extends StatelessWidget {
                         icon: const Icon(Icons.clear),
                         onPressed: () async {
                           searchController.clear();
-                          await BlocProvider.of<HomeCubit>(cubitCTX).getWords("", 1);
+                          await BlocProvider.of<DefinitionCubit>(cubitCTX).getWords("", 1);
                         },
                       ),
                       hintText: 'Search...',
                       border: InputBorder.none,
                     ),
                     onChanged: (String text) async {
-                      await BlocProvider.of<HomeCubit>(cubitCTX).getWords(text, 1);
+                      await BlocProvider.of<DefinitionCubit>(cubitCTX).getWords(text, 1);
                     },
                   ),
                 ),
@@ -135,38 +114,11 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () async {
-                      bool saved = await StorageService().saveBool(key: "engUzb", value: !CacheKeys.engUzb);
-                      if(saved) {
-                        CacheKeys.engUzb = !CacheKeys.engUzb;
-                        searchController.clear();
-                        MyWidgets().showToast("Language is changed to ${CacheKeys.engUzb ? "english" : "uzbek"}", isError: false);
-                        await BlocProvider.of<HomeCubit>(cubitCTX).getWords("", 1);
-                      }
-                    },
-                    child: Container(
-                      margin: EdgeInsets.all(10),
-                      alignment: Alignment.center,
-                      width: 30.w,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.change_circle_outlined,
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ),
                 ],
               ),
-              drawer: AppDrawer(cubitCTX),
               body: Column(
                 children: [
-                  if(!emptyResult) Expanded(
+                  if(CachedModels.definitionModel.isNotEmpty) Expanded(
                     child: NotificationListener<ScrollNotification>(
                       onNotification: (scrollEnd) {
                         var metrics = scrollEnd.metrics;
@@ -175,17 +127,17 @@ class HomeScreen extends StatelessWidget {
                             if(state.loadMore && !state.loading && !reachBottom) {
                               reachBottom = true;
                               page++;
-                              BlocProvider.of<HomeCubit>(cubitCTX).getWords(searchController.text, page);
+                              BlocProvider.of<DefinitionCubit>(cubitCTX).getWords(searchController.text, page);
                             }
                           }
                         }
                         return true;
                       },
                       child: ListView.builder(
-                        itemCount: CacheKeys.engUzb ? CachedModels.engUzbModel.length : CachedModels.uzbEngModel.length,
+                        itemCount: CachedModels.definitionModel.length,
                         itemBuilder: (ctx, index) {
-                          String name = CacheKeys.engUzb ? CachedModels.engUzbModel[index].eng : CachedModels.uzbEngModel[index].uzb;
-                          String description = CacheKeys.engUzb ? CachedModels.engUzbModel[index].uzb : CachedModels.uzbEngModel[index].eng;
+                          String name = CachedModels.definitionModel[index].word;
+                          String description = CachedModels.definitionModel[index].description;
                           return Column(
                             children: [
                               InkWell(
@@ -209,7 +161,7 @@ class HomeScreen extends StatelessWidget {
                                     name,
                                     textAlign: TextAlign.start,
                                     style: TextStyle(
-                                      fontSize: 13.sp
+                                        fontSize: 13.sp
                                     ),
                                   ),
                                 ),
@@ -224,7 +176,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if(emptyResult) Center(
+                  if(CachedModels.definitionModel.isEmpty) Center(
                     child: Column(
                       children: [
                         SizedBox(height: 100.h),
@@ -237,21 +189,11 @@ class HomeScreen extends StatelessWidget {
                   if(state.loading) Text(
                     "Loading",
                     style: TextStyle(
-                      fontSize: 15.sp
+                        fontSize: 15.sp
                     ),
                   )
                 ],
-              ),
-              floatingActionButton: CacheKeys.engUzb ? FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const DefinitionScreen()));
-                },
-                child: ClipOval(
-                    child: Image.asset(
-                      'assets/images/gb_logo.png',
-                      fit: BoxFit.cover,
-                    )),
-              ) : SizedBox(),
+              )
             );
           } else {
             return SizedBox();
