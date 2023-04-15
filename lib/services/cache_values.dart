@@ -4,7 +4,7 @@ import 'package:dictionary/models/uzb_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class CacheKeys {
-  static bool english = false;
+  static bool engUzb = false;
 }
 
 class CachedModels {
