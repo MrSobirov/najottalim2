@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:dictionary/models/definition_model.dart';
 import 'package:dictionary/models/eng_model.dart';
 import 'package:dictionary/models/uzb_model.dart';
 import 'package:dictionary/services/cache_values.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 
 import 'package:sqflite/sqflite.dart';
@@ -12,9 +15,21 @@ class DBService {
 
   Future<bool> openAssetDatabase() async {
     try {
-      String databasesPath = await getDatabasesPath();
-      String path = join(databasesPath, "eng_dictionary.db");
-      CachedModels.database = await openDatabase(path, readOnly: false);
+      String path = join(await getDatabasesPath(), "eng_dictionary.db");
+      var exists = await databaseExists(path);
+      if (!exists) {
+        print("Creating new copy from asset");
+        try {
+          await Directory(dirname(path)).create(recursive: true);
+        } catch (_) {}
+        ByteData data = await rootBundle.load(join("assets", "eng_dictionary.db"));
+        List<int> bytes =
+        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+        await File(path).writeAsBytes(bytes, flush: true);
+      } else {
+        print("Opening existing database");
+      }
+      CachedModels.database = await openDatabase(path, readOnly: true);
       return true;
     } catch(error, stacktrace) {
       debugPrint("Databasing opening error: $error, $stacktrace");
@@ -28,6 +43,7 @@ class DBService {
     }
     try{
       if(CachedModels.database != null) {
+        print((await CachedModels.database!.query('sqlite_master', columns: ['type', 'name'])));
         sqlResponse = await CachedModels.database!.rawQuery("SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY _id) AS RowNum, * FROM eng_uzb WHERE eng_uzb.eng like '%$word%') AS RowConstrainedResult WHERE RowNum >= $page AND RowNum < ${page+30} ORDER BY RowNum");
         CachedModels.engUzbModel.addAll(engUzbModelFromJson(sqlResponse));
         return sqlResponse.isNotEmpty;
