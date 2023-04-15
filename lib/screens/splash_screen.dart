@@ -2,6 +2,7 @@ import 'package:dictionary/screens/choose_language.dart';
 import 'package:dictionary/services/cache_values.dart';
 import 'package:dictionary/services/db_service.dart';
 import 'package:dictionary/services/storage_service.dart';
+import 'package:dictionary/utils/my_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'home/home_screen.dart';
@@ -20,7 +21,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void navigate() async {
     Widget page = HomeScreen();
-    await DBService().openAssetDatabase();
+    bool opened = await DBService().openAssetDatabase();
+    MyWidgets().showToast("Database ${opened ? "" : "not "}loaded", isError: false);
     bool? engUzb = await StorageService().getBool(key: "engUzb");
     if(engUzb == null) {
       page = ChooseLanguage();
