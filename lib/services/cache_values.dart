@@ -5,6 +5,9 @@ import 'package:sqflite/sqflite.dart';
 
 class CacheKeys {
   static bool engUzb = false;
+  static int engUzbPage = 1;
+  static int uzbEngPage = 1;
+  static int definitionPage = 0;
 }
 
 class CachedModels {

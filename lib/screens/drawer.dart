@@ -34,7 +34,13 @@ class AppDrawer extends StatelessWidget {
                   CacheKeys.engUzb = !CacheKeys.engUzb;
                   MyWidgets().showToast("Language is changed to ${CacheKeys.engUzb ? "english" : "uzbek"}", isError: false);
                   Navigator.pop(context);
-                  await BlocProvider.of<HomeCubit>(homeCubitCTX).getWords("", 1);
+                  int page = 1;
+                  if(CacheKeys.engUzb) {
+                    page = CacheKeys.engUzbPage++;
+                  } else {
+                    page = CacheKeys.uzbEngPage++;
+                  }
+                  await BlocProvider.of<HomeCubit>(homeCubitCTX).getWords("", page);
                 }
               }),
           MyWidgets().divider(),

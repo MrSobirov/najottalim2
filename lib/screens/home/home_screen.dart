@@ -17,10 +17,10 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController searchController = TextEditingController();
-    int page = 1;
     bool reachBottom = false;
+    int page = CacheKeys.engUzb ? CacheKeys.engUzbPage : CacheKeys.uzbEngPage;
     return BlocProvider(
-      create: (ctx1) => HomeCubit()..getWords("", 1),
+      create: (ctx1) => HomeCubit()..getWords("", page),
       child: BlocBuilder<HomeCubit, HomeState>(
         builder: (cubitCTX, state) {
           reachBottom = false;
@@ -37,10 +37,11 @@ class HomeScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: TextField(
+                    autofocus: false,
                     controller: searchController,
                     decoration: InputDecoration(
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.clear),
+                        icon: const Icon(Icons.clear, color: Colors.red),
                         onPressed: null,
                       ),
                       hintText: 'Search...',
@@ -49,10 +50,11 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 actions: [
+                  SizedBox(width: 10.w),
                   Container(
-                    margin: EdgeInsets.all(10),
+                    margin: EdgeInsets.symmetric(vertical: 5.h),
                     alignment: Alignment.center,
-                    width: 30.w,
+                    width: 38.w,
                     height: 20.h,
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -65,19 +67,22 @@ class HomeScreen extends StatelessWidget {
                       color: Colors.blue,
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    alignment: Alignment.center,
-                    width: 30.w,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 5.h),
+                      alignment: Alignment.center,
+                      width: 38.w,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
                       ),
-                    ),
-                    child: Icon(
-                      Icons.change_circle_outlined,
-                      color: Colors.blue,
+                      child: Icon(
+                        Icons.change_circle_outlined,
+                        color: Colors.blue,
+                      ),
                     ),
                   ),
                 ],
@@ -101,10 +106,16 @@ class HomeScreen extends StatelessWidget {
                     controller: searchController,
                     decoration: InputDecoration(
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.clear),
+                        icon: const Icon(Icons.clear, color: Colors.red ),
                         onPressed: () async {
                           searchController.clear();
-                          await BlocProvider.of<HomeCubit>(cubitCTX).getWords("", 1);
+                          int page = 1;
+                          if(CacheKeys.engUzb) {
+                            page = CacheKeys.engUzbPage++;
+                          } else {
+                            page = CacheKeys.uzbEngPage++;
+                          }
+                          await BlocProvider.of<HomeCubit>(cubitCTX).getWords("", page);
                         },
                       ),
                       hintText: 'Search...',
@@ -116,12 +127,13 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 actions: [
+                  SizedBox(width: 10.w),
                   GestureDetector(
                     onTap: () {},
                     child: Container(
-                      margin: EdgeInsets.all(10),
+                      margin: EdgeInsets.symmetric(vertical: 5.h),
                       alignment: Alignment.center,
-                      width: 30.w,
+                      width: 38.w,
                       height: 20.h,
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -135,29 +147,38 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () async {
-                      bool saved = await StorageService().saveBool(key: "engUzb", value: !CacheKeys.engUzb);
-                      if(saved) {
-                        CacheKeys.engUzb = !CacheKeys.engUzb;
-                        searchController.clear();
-                        MyWidgets().showToast("Language is changed to ${CacheKeys.engUzb ? "english" : "uzbek"}", isError: false);
-                        await BlocProvider.of<HomeCubit>(cubitCTX).getWords("", 1);
-                      }
-                    },
-                    child: Container(
-                      margin: EdgeInsets.all(10),
-                      alignment: Alignment.center,
-                      width: 30.w,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: GestureDetector(
+                      onTap: () async {
+                        bool saved = await StorageService().saveBool(key: "engUzb", value: !CacheKeys.engUzb);
+                        if(saved) {
+                          CacheKeys.engUzb = !CacheKeys.engUzb;
+                          searchController.clear();
+                          MyWidgets().showToast("Language is changed to ${CacheKeys.engUzb ? "english" : "uzbek"}", isError: false);
+                          int page = 1;
+                          if(CacheKeys.engUzb) {
+                            page = CacheKeys.engUzbPage++;
+                          } else {
+                            page = CacheKeys.uzbEngPage++;
+                          }
+                          await BlocProvider.of<HomeCubit>(cubitCTX).getWords("", page);
+                        }
+                      },
+                      child: Container(
+                        margin: EdgeInsets.symmetric(vertical: 5.h),
+                        alignment: Alignment.center,
+                        width: 38.w,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
                         ),
-                      ),
-                      child: Icon(
-                        Icons.change_circle_outlined,
-                        color: Colors.blue,
+                        child: Icon(
+                          Icons.change_circle_outlined,
+                          color: Colors.blue,
+                        ),
                       ),
                     ),
                   ),
@@ -174,7 +195,12 @@ class HomeScreen extends StatelessWidget {
                           if (metrics.pixels != 0) {
                             if(state.loadMore && !state.loading && !reachBottom) {
                               reachBottom = true;
-                              page++;
+                              int page = 1;
+                              if(CacheKeys.engUzb) {
+                                page = CacheKeys.engUzbPage++;
+                              } else {
+                                page = CacheKeys.uzbEngPage++;
+                              }
                               BlocProvider.of<HomeCubit>(cubitCTX).getWords(searchController.text, page);
                             }
                           }
@@ -193,7 +219,7 @@ class HomeScreen extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => Details(),
+                                      builder: (context) => Details(name, description),
                                     ),
                                   );
                                 },
@@ -234,10 +260,13 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if(state.loading) Text(
-                    "Loading",
-                    style: TextStyle(
-                      fontSize: 15.sp
+                  if(state.loading) Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5.h),
+                    child: Text(
+                      "Loading...",
+                      style: TextStyle(
+                        fontSize: 15.sp
+                      ),
                     ),
                   )
                 ],

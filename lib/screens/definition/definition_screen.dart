@@ -13,10 +13,10 @@ class DefinitionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController searchController = TextEditingController();
-    int page = 1;
     bool reachBottom = false;
+    CacheKeys.definitionPage++;
     return BlocProvider(
-      create: (ctx1) => DefinitionCubit()..getWords("", 1),
+      create: (ctx1) => DefinitionCubit()..getWords("", CacheKeys.definitionPage),
       child: BlocBuilder<DefinitionCubit, DefinitionState>(
         builder: (cubitCTX, state) {
           reachBottom = false;
@@ -36,7 +36,7 @@ class DefinitionScreen extends StatelessWidget {
                     controller: searchController,
                     decoration: InputDecoration(
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.clear),
+                        icon: const Icon(Icons.clear, color: Colors.red),
                         onPressed: null,
                       ),
                       hintText: 'Search...',
@@ -45,20 +45,23 @@ class DefinitionScreen extends StatelessWidget {
                   ),
                 ),
                 actions: [
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    alignment: Alignment.center,
-                    width: 30.w,
-                    height: 20.h,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 5.h),
+                      alignment: Alignment.center,
+                      width: 38.w,
+                      height: 20.h,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
                       ),
-                    ),
-                    child: Icon(
-                      Icons.mic,
-                      color: Colors.blue,
+                      child: Icon(
+                        Icons.mic,
+                        color: Colors.blue,
+                      ),
                     ),
                   ),
                 ],
@@ -80,7 +83,7 @@ class DefinitionScreen extends StatelessWidget {
                     controller: searchController,
                     decoration: InputDecoration(
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.clear),
+                        icon: const Icon(Icons.clear, color: Colors.red),
                         onPressed: () async {
                           searchController.clear();
                           await BlocProvider.of<DefinitionCubit>(cubitCTX).getWords("", 1);
@@ -95,22 +98,25 @@ class DefinitionScreen extends StatelessWidget {
                   ),
                 ),
                 actions: [
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      margin: EdgeInsets.all(10),
-                      alignment: Alignment.center,
-                      width: 30.w,
-                      height: 20.h,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        margin: EdgeInsets.symmetric(vertical: 5.h),
+                        alignment: Alignment.center,
+                        width: 38.w,
+                        height: 20.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
                         ),
-                      ),
-                      child: Icon(
-                        Icons.mic,
-                        color: Colors.blue,
+                        child: Icon(
+                          Icons.mic,
+                          color: Colors.blue,
+                        ),
                       ),
                     ),
                   ),
@@ -126,8 +132,8 @@ class DefinitionScreen extends StatelessWidget {
                           if (metrics.pixels != 0) {
                             if(state.loadMore && !state.loading && !reachBottom) {
                               reachBottom = true;
-                              page++;
-                              BlocProvider.of<DefinitionCubit>(cubitCTX).getWords(searchController.text, page);
+                              CacheKeys.definitionPage++;
+                              BlocProvider.of<DefinitionCubit>(cubitCTX).getWords(searchController.text, CacheKeys.definitionPage);
                             }
                           }
                         }
@@ -145,7 +151,7 @@ class DefinitionScreen extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => Details(),
+                                      builder: (context) => Details(name, description),
                                     ),
                                   );
                                 },
@@ -186,10 +192,13 @@ class DefinitionScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if(state.loading) Text(
-                    "Loading",
-                    style: TextStyle(
-                        fontSize: 15.sp
+                  if(state.loading) Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5.h),
+                    child: Text(
+                      "Loading...",
+                      style: TextStyle(
+                          fontSize: 15.sp
+                      ),
                     ),
                   )
                 ],
