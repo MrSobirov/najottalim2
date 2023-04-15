@@ -40,7 +40,7 @@ dependencies:
   flutter_screenutil:
   sqflite:
   pdf:
-  just_audio:
+  just_audio: ^0.9.32
   http:
   shared_preferences:
 
