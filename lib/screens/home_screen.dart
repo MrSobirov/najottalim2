@@ -25,7 +25,6 @@ class _HomeScreenState extends State<HomeScreen> {
             borderRadius: BorderRadius.circular(5),
           ),
           child: TextField(
-            style: TextStyle(color: Colors.black),
             controller: controller,
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.search),
@@ -86,6 +85,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: ClipOval(
+            child: Image.asset(
+          'assets/images/gb_logo.png',
+          fit: BoxFit.cover,
+        )),
+      ),
       body: ListView.builder(
         itemBuilder: (ctx, i) => Column(
           children: [
@@ -109,9 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text(
                   'abandon',
                   textAlign: TextAlign.start,
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
+
                 ),
               ),
             ),

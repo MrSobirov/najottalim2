@@ -15,4 +15,7 @@ class MyDialogs {
           content: Text(description,style: TextStyle(color: Colors.black),),
         ));
   }
+  void voiceDialog(BuildContext context){
+
+}
 }
