@@ -15,5 +15,11 @@ class MyWidgets {
         textColor: Colors.white
     );
   }
+  Widget sizedBox(double size){
+    return SizedBox(height: size,);
+  }
+  Widget divider(){
+    return Divider(color: Colors.black54,);
+  }
 
 }

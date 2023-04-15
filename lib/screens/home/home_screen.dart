@@ -1,3 +1,4 @@
+import 'package:dictionary/screens/drawer.dart';
 import 'package:dictionary/screens/home/home_cubit.dart';
 import 'package:dictionary/services/cache_values.dart';
 import 'package:dictionary/services/storage_service.dart';
@@ -79,6 +80,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
+              drawer: AppDrawer(),
             );
           } else if (state is HomeLoaded){
             return Scaffold(
@@ -150,6 +152,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
+              drawer: AppDrawer(),
               body: Column(
                 children: [
                   Expanded(
