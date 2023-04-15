@@ -1,5 +1,8 @@
+import 'package:dictionary/screens/add_word_screen.dart';
+import 'package:dictionary/screens/choose_language.dart';
 import 'package:dictionary/utils/my_widgets.dart';
 import 'package:flutter/material.dart';
+
 class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
 
@@ -12,32 +15,37 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Dictionary'),
             automaticallyImplyLeading: false,
           ),
-
           ListTile(
               leading: const Icon(Icons.search),
               title: const Text('Search Online'),
-              onTap: () {
-
-              }),
+              onTap: () {}),
           MyWidgets().divider(),
           ListTile(
               leading: const Icon(Icons.change_circle_outlined),
               title: const Text('Change Language'),
               onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChooseLanguage(),
+                  ),
+                );
               }),
           MyWidgets().divider(),
           ListTile(
               leading: const Icon(Icons.add),
               title: const Text('Add a word'),
-              onTap: () {
-              }),
+              onTap: () {Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddWordScreen(),
+                ),
+              );}),
           MyWidgets().divider(),
           ListTile(
             leading: const Icon(Icons.picture_as_pdf),
             title: const Text('Convert to pdf'),
-            onTap: () {
-
-            },
+            onTap: () {},
           ),
         ],
       ),
