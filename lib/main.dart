@@ -1,4 +1,5 @@
 import 'package:dictionary/screens/home_screen.dart';
+import 'package:dictionary/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
           home: child,
         );
       },
-      child: const HomeScreen(),
+      child: SplashScreen(),
     );
   }
 }

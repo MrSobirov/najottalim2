@@ -1,13 +1,18 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MyDialogs {
-  void descriptionDialog(BuildContext ctx, String title, String description) {
+  void descriptionDialog(BuildContext context ,String title, String description) {
     showDialog(
-      context: ctx,
-      builder: (dialogCTX) {
-        return Column();
-      },
-    );
+        context: context,
+        builder: (ctx) => AlertDialog(
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Ok'),
+            ),
+          ],
+          title: Text(title,style: TextStyle(color: Colors.black),),
+          content: Text(description,style: TextStyle(color: Colors.black),),
+        ));
   }
 }
