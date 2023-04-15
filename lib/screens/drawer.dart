@@ -1,4 +1,5 @@
 import 'package:dictionary/screens/add_word_screen.dart';
+import 'package:dictionary/screens/pdf/pdf_page.dart';
 import 'package:dictionary/utils/my_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,19 +46,15 @@ class AppDrawer extends StatelessWidget {
               }),
           MyWidgets().divider(),
           ListTile(
-              leading: const Icon(Icons.add),
-              title: const Text('Add a word'),
-              onTap: () {Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddWordScreen(),
-                ),
-              );}),
+            leading: const Icon(Icons.add),
+            title: const Text('Add a word'),
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AddWordScreen())),
+          ),
           MyWidgets().divider(),
           ListTile(
             leading: const Icon(Icons.picture_as_pdf),
             title: const Text('Convert to pdf'),
-            onTap: () {},
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PdfPage())),
           ),
         ],
       ),

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:dictionary/services/db_service.dart';
 import 'package:dictionary/utils/my_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AddWordScreen extends StatefulWidget {
   const AddWordScreen({Key? key}) : super(key: key);
@@ -15,57 +16,6 @@ class _AddWordScreenState extends State<AddWordScreen> {
   TextEditingController wordController = TextEditingController();
   TextEditingController definitionController = TextEditingController();
   String table = 'eng_uzb';
-
-  void saveWord() async {
-    if(wordController.text.isEmpty) {
-      MyWidgets().showToast("Enter a word", isError: false);
-      return;
-    }
-
-    if(definitionController.text.isEmpty) {
-      MyWidgets().showToast("Enter a definition", isError: false);
-      return;
-    }
-    Map<String, dynamic> body = {};
-    int id = 176064 + Random().nextInt(10000);
-    switch(table) {
-      case "eng_uzb":
-        body = {
-          "_id": id,
-          "eng": wordController.text,
-          "pron": "()",
-          "uzb": definitionController.text
-        };
-        break;
-      case "uzb_eng":
-        body = {
-          "_id": id,
-          "uzb": wordController.text,
-          "eng": definitionController.text,
-          "eng_1": "",
-          "eng_2": "",
-        };
-        break;
-      case "definition":
-        body = {
-          "ID": id,
-          "Word": wordController.text,
-          "Type": "()",
-          "Description": definitionController.text
-        };
-        break;
-    }
-    bool? added = await DBService().addWordToDB(table, body);
-    if(added != null) {
-      if(added) {
-        Navigator.pop(context);
-      } else {
-        MyWidgets().showToast("Not added!");
-      }
-    } else {
-      MyWidgets().showToast("Error occurred!");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +68,7 @@ class _AddWordScreenState extends State<AddWordScreen> {
                         value: value,
                         child: Text(
                           value,
-                          style: TextStyle(fontSize: 30),
+                          style: TextStyle(fontSize: 20.sp),
                         ),
                       );
                     }).toList(),
@@ -145,5 +95,56 @@ class _AddWordScreenState extends State<AddWordScreen> {
         ),
       ),
     );
+  }
+
+  void saveWord() async {
+    if(wordController.text.isEmpty) {
+      MyWidgets().showToast("Enter a word", isError: false);
+      return;
+    }
+
+    if(definitionController.text.isEmpty) {
+      MyWidgets().showToast("Enter a definition", isError: false);
+      return;
+    }
+    Map<String, dynamic> body = {};
+    int id = 176064 + Random().nextInt(10000);
+    switch(table) {
+      case "eng_uzb":
+        body = {
+          "_id": id,
+          "eng": wordController.text,
+          "pron": "()",
+          "uzb": definitionController.text
+        };
+        break;
+      case "uzb_eng":
+        body = {
+          "_id": id,
+          "uzb": wordController.text,
+          "eng": definitionController.text,
+          "eng_1": "",
+          "eng_2": "",
+        };
+        break;
+      case "definition":
+        body = {
+          "ID": id,
+          "Word": wordController.text,
+          "Type": "()",
+          "Description": definitionController.text
+        };
+        break;
+    }
+    bool? added = await DBService().addWordToDB(table, body);
+    if(added != null) {
+      if(added) {
+        Navigator.pop(context);
+      } else {
+        MyWidgets().showToast("Not added!");
+      }
+    } else {
+      MyWidgets().showToast("Error occurred!");
+    }
   }
 }

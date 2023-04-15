@@ -40,11 +40,13 @@ dependencies:
   flutter_screenutil:
   sqflite:
   pdf:
-  just_audio: ^0.9.32
+  just_audio:
   http:
   shared_preferences:
   fluttertoast:
-  flutter_html: ^2.2.1
+  flutter_html:
+  open_file_safe:
+  permission_handler:
 
 dev_dependencies:
   flutter_test:
