@@ -37,10 +37,12 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons:
   flutter_bloc:
-  screen_utils:
+  flutter_screenutil:
   sqflite:
   pdf:
   just_audio:
+  http:
+  shared_preferences:
 
 dev_dependencies:
   flutter_test:
@@ -77,8 +79,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/eng_dictionary.db
-    - assets/images
-    - assets/icons
+    - assets/images/
+    - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

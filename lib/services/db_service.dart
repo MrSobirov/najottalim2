@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:sqflite/sqflite.dart';
 
-class StorageService {
+class DBService {
   static List<Map> sqlResponse = [];
   Future<bool> getEngUz() async {
     try{
