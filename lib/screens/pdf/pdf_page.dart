@@ -64,7 +64,7 @@ class PdfPage extends StatelessWidget {
 														alignment: Alignment.center,
 														padding: EdgeInsets.symmetric(horizontal: 7.w),
 														decoration: BoxDecoration(
-															color: Colors.teal,
+															color: Colors.amberAccent,
 															borderRadius: BorderRadius.circular(10.r)
 														),
 														child: Text("Convert to pdf"),

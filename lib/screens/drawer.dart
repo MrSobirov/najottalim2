@@ -4,6 +4,7 @@ import 'package:dictionary/screens/pdf/pdf_page.dart';
 import 'package:dictionary/utils/my_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../services/cache_values.dart';
 import '../services/storage_service.dart';
@@ -19,15 +20,22 @@ class AppDrawer extends StatelessWidget {
       child: Column(
         children: [
           AppBar(
-            title: const Text('Dictionary'),
+            title: Text(
+              'Dictionary',
+              style: TextStyle(fontSize: 22.sp),
+            ),
             automaticallyImplyLeading: false,
           ),
           ListTile(
             leading: const Icon(Icons.search),
-            title: const Text('Search Online'),
+            title: Text(
+              'Search Online',
+              style: TextStyle(fontSize: 16.sp),
+            ),
             onTap: () async {
-              if(await CacheKeys.hasInternet()) {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => OnlineScreen()));
+              if (await CacheKeys.hasInternet()) {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (_) => OnlineScreen()));
               } else {
                 MyWidgets().showToast("No connection!");
               }
@@ -35,35 +43,50 @@ class AppDrawer extends StatelessWidget {
           ),
           MyWidgets().divider(),
           ListTile(
-              leading: const Icon(Icons.change_circle_outlined),
-              title: const Text('Change Language'),
-              onTap: () async {
-                bool saved = await StorageService().saveBool(key: "engUzb", value: !CacheKeys.engUzb);
-                if(saved) {
-                  CacheKeys.engUzb = !CacheKeys.engUzb;
-                  MyWidgets().showToast("Language is changed to ${CacheKeys.engUzb ? "english" : "uzbek"}", isError: false);
-                  Navigator.pop(context);
-                  int page = 1;
-                  if(CacheKeys.engUzb) {
-                    page = CacheKeys.engUzbPage++;
-                  } else {
-                    page = CacheKeys.uzbEngPage++;
-                  }
-                  await BlocProvider.of<HomeCubit>(homeCubitCTX).getWords("", page);
+            leading: const Icon(Icons.change_circle_outlined),
+            title: Text(
+              'Change Language',
+              style: TextStyle(fontSize: 16.sp),
+            ),
+            onTap: () async {
+              bool saved = await StorageService()
+                  .saveBool(key: "engUzb", value: !CacheKeys.engUzb);
+              if (saved) {
+                CacheKeys.engUzb = !CacheKeys.engUzb;
+                MyWidgets().showToast(
+                    "Language is changed to ${CacheKeys.engUzb ? "english" : "uzbek"}",
+                    isError: false);
+                Navigator.pop(context);
+                int page = 1;
+                if (CacheKeys.engUzb) {
+                  page = CacheKeys.engUzbPage++;
+                } else {
+                  page = CacheKeys.uzbEngPage++;
                 }
-              },
+                await BlocProvider.of<HomeCubit>(homeCubitCTX)
+                    .getWords("", page);
+              }
+            },
           ),
           MyWidgets().divider(),
           ListTile(
             leading: const Icon(Icons.add),
-            title: const Text('Add a word'),
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AddWordScreen())),
+            title: Text(
+              'Add a word',
+              style: TextStyle(fontSize: 16.sp),
+            ),
+            onTap: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const AddWordScreen())),
           ),
           MyWidgets().divider(),
           ListTile(
             leading: const Icon(Icons.picture_as_pdf),
-            title: const Text('Convert to pdf'),
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PdfPage())),
+            title: Text(
+              'Convert to pdf',
+              style: TextStyle(fontSize: 16.sp),
+            ),
+            onTap: () => Navigator.push(
+                context, MaterialPageRoute(builder: (context) => PdfPage())),
           ),
         ],
       ),

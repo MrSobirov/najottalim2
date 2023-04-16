@@ -9,6 +9,8 @@ class MyDialogs {
     showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(32.0),),),
           title: Text(title, style: TextStyle(fontSize: 15.sp, color: Colors.red), textAlign: TextAlign.center,),
           content: Html(
             data: description,
@@ -17,10 +19,11 @@ class MyDialogs {
             GestureDetector(
               onTap: () => Navigator.of(ctx).pop(),
               child: Container(
+                margin: EdgeInsets.only(right: 6.w, bottom: 4.h),
                 height: 27.h,
                 width: 60.w,
                 alignment: Alignment.center,
-                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                padding: EdgeInsets.symmetric(horizontal: 8.w, ),
                 decoration: BoxDecoration(
                   color: Colors.blue,
                   borderRadius: BorderRadius.circular(12.r)
@@ -49,6 +52,8 @@ class MyDialogs {
         },
         child: SizedBox(
           child: AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(32.0),),),
             title: Text(
               "Tap to speak",
               style: TextStyle(fontSize: 13.sp),
@@ -90,7 +95,7 @@ class MyDialogs {
                           child: Icon(listening ? Icons.stop : Icons.mic, size: 45.w, color: Colors.white),
                         ),
                       ),
-                      SizedBox(height: 20.h),
+                      SizedBox(height: 15.h),
                       Text(
                         recordedWord.isNotEmpty ? recordedWord : "Result here.....",
                       ),

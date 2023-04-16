@@ -21,7 +21,7 @@ class _AddWordScreenState extends State<AddWordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add A Word'),
+        title: Text('Add A Word', style: TextStyle(fontSize: 20.sp),),
         actions: [
           IconButton(
             onPressed: saveWord,
@@ -30,8 +30,8 @@ class _AddWordScreenState extends State<AddWordScreen> {
         ],
       ),
       body: Container(
-        margin: EdgeInsets.all(5),
-        padding: const EdgeInsets.all(16.0),
+        margin: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
+        padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -47,7 +47,7 @@ class _AddWordScreenState extends State<AddWordScreen> {
                             borderSide: BorderSide(color: Colors.black54),
                             borderRadius: BorderRadius.circular(20))),
                   ),
-                  MyWidgets().sizedBox(15),
+                  MyWidgets().sizedBox(15.h),
                   TextField(
                     controller: definitionController,
                     decoration: InputDecoration(
@@ -56,7 +56,7 @@ class _AddWordScreenState extends State<AddWordScreen> {
                             borderSide: BorderSide(color: Colors.black54),
                             borderRadius: BorderRadius.circular(20))),
                   ),
-                  MyWidgets().sizedBox(15),
+                  MyWidgets().sizedBox(15.h),
                   DropdownButton<String>(
                     value: table,
                     items: <String>[
@@ -78,14 +78,14 @@ class _AddWordScreenState extends State<AddWordScreen> {
                       });
                     },
                   ),
-                  MyWidgets().sizedBox(15),
+                  MyWidgets().sizedBox(15.h),
                 ],
               ),
             ),
             ElevatedButton.icon(
               onPressed: saveWord,
               icon: const Icon(Icons.add),
-              label: const Text('Add A Word'),
+              label: Text('Add A Word', style: TextStyle(fontSize: 15.sp),),
               style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.secondary,
                   elevation: 0,
