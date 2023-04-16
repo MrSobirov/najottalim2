@@ -18,7 +18,7 @@ class DBService {
       String path = join(await getDatabasesPath(), "eng_dictionary.db");
       var exists = await databaseExists(path);
       if (!exists) {
-        print("Creating new copy from asset");
+        debugPrint("Creating new copy from asset");
         try {
           await Directory(dirname(path)).create(recursive: true);
         } catch (_) {}
@@ -27,7 +27,7 @@ class DBService {
         data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
         await File(path).writeAsBytes(bytes, flush: true);
       } else {
-        print("Opening existing database");
+        debugPrint("Opening existing database");
       }
       CachedModels.database = await openDatabase(path);
       return true;

@@ -45,7 +45,7 @@ dependencies:
   shared_preferences:
   fluttertoast:
   flutter_html:
-  open_file_safe:
+  open_file:
   permission_handler:
 
 dev_dependencies:
@@ -83,6 +83,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/eng_dictionary.db
+    - assets/Helvetica.ttf
     - assets/images/
     - assets/icons/
 

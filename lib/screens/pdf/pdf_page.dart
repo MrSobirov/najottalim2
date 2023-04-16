@@ -1,9 +1,11 @@
 import 'package:dictionary/models/definition_model.dart';
 import 'package:dictionary/models/eng_model.dart';
+import 'package:dictionary/models/pdf_model.dart';
 import 'package:dictionary/models/uzb_model.dart';
 import 'package:dictionary/screens/pdf/pdf_cubit.dart';
 import 'package:dictionary/services/pdf_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,7 +16,7 @@ import '../../services/cache_values.dart';
 class PdfPage extends StatelessWidget {
 	PdfPage({Key? key}) : super(key: key);
 	String type = "eng_uzb";
-	List<Map<String, dynamic>> items = [];
+	List<PdfModel> items = [];
 	@override
 	Widget build(BuildContext context) {
 		return Scaffold(
@@ -55,7 +57,7 @@ class PdfPage extends StatelessWidget {
 													},
 												),
 												GestureDetector(
-													onTap: () => buildAndSavePdf(),
+													onTap: () => buildAndSavePdf(context),
 													child: Container(
 														height: 40,
 														width: 130.w,
@@ -79,10 +81,7 @@ class PdfPage extends StatelessWidget {
 										if(state is PdfLoaded) Expanded(
 											child: Padding(
 												padding: EdgeInsets.symmetric(vertical: 10.h),
-												child: SingleChildScrollView(
-
-													child: wordList(),
-												),
+												child: wordList(),
 											),
 										),
 									],
@@ -97,96 +96,78 @@ class PdfPage extends StatelessWidget {
 		);
 	}
 
-	void buildAndSavePdf() async {
+	void buildAndSavePdf(BuildContext ctx) async {
 		List<Map<String, String>> chosenItems = [];
-		for(Map<String, dynamic> element in items) {
-			if(element["chosen"]) {
-				print(element);
+		for(PdfModel element in items) {
+			if(element.chosen) {
 				chosenItems.add({
-					"name": element["name"],
-					"text": element["text"]
+					"name": element.name,
+					"text": element.text
 				});
 			}
 		}
-		print(chosenItems);
-		return;
-		await PdfService().savePdf(chosenItems);
+		ByteData data = await rootBundle.load("assets/Helvetica.ttf");
+		await PdfService().savePdf(chosenItems, data);
+		Navigator.pop(ctx);
 	}
 
 	Widget wordList() {
-		int index = -1;
 		items.clear();
 		if(type == "eng_uzb") {
 			for(EngUzbModel element in CachedModels.engUzbModel) {
-				items.add({
-					"name": element.eng,
-					"text": element.uzb,
-					"chosen": false
-				});
+				items.add(PdfModel(name: element.eng, text: element.uzb, chosen: false));
 			}
 		} else if(type == "uzb_eng") {
 			for(UzbEngModel element in CachedModels.uzbEngModel) {
-				items.add({
-					"name": element.uzb,
-					"text": element.eng,
-					"chosen": false
-				});
+				items.add(PdfModel(name: element.uzb, text: element.eng, chosen: false));
 			}
 		} else if(type == "definition") {
 			for(DefinitionModel element in CachedModels.definitionModel) {
-				items.add({
-					"name": element.word,
-					"text": element.description,
-					"chosen": false
-				});
+				items.add(PdfModel(name: element.word, text: element.description, chosen: false));
 			}
 		}
-		return Column(
-			crossAxisAlignment: CrossAxisAlignment.start,
-			children: items.map((item) {
-				index++;
-				return Padding(
-					padding: EdgeInsets.only(bottom: 10.h),
-					child: Row(
-						crossAxisAlignment: CrossAxisAlignment.start,
-						children: [
-							Expanded(
-								flex: 6,
-								child: Column(
-									crossAxisAlignment: CrossAxisAlignment.start,
-									children: [
-										Text(
-											"${item["name"]}",
-											style: TextStyle(
-													fontSize: 15.sp,
-													fontWeight: FontWeight.w500
-											),
+		return ListView.builder(
+			itemCount: items.length,
+			itemBuilder: (wordCTX, index) => Padding(
+				padding: EdgeInsets.only(bottom: 10.h),
+				child: Row(
+					crossAxisAlignment: CrossAxisAlignment.start,
+					children: [
+						Expanded(
+							flex: 6,
+							child: Column(
+								crossAxisAlignment: CrossAxisAlignment.start,
+								children: [
+									Text(
+										items[index].name,
+										style: TextStyle(
+												fontSize: 15.sp,
+												fontWeight: FontWeight.w500
 										),
-										Html(data: "${item["text"].toString().trim()}"),
-									],
-								),
+									),
+									Html(data: items[index].text),
+								],
 							),
-							Expanded(
-								flex: 1,
-								child: StatefulBuilder(
-									builder: (ctxCheck, checkSetState) {
-										return Checkbox(
-											value: items[index]["chosen"],
-											onChanged: (bool? newVal) {
-												if(newVal != null) {
-													items[index]["chosen"] = newVal;
-												}
-												print(items[index]);
-												checkSetState(() {});
-											},
-										);
-									},
-								),
-							)
-						],
-					),
-				);
-			}).toList(),
+						),
+						Expanded(
+							flex: 1,
+							child: StatefulBuilder(
+								builder: (ctxCheck, checkSetState) {
+									return Checkbox(
+										value: items[index].chosen,
+										onChanged: (bool? newVal) {
+											if(newVal != null) {
+												items[index].chosen = newVal;
+											}
+											checkSetState(() {});
+										},
+									);
+								},
+							),
+						)
+					],
+				),
+			),
 		);
 	}
 }

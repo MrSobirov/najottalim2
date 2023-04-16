@@ -6,8 +6,7 @@ class UzbEngModel {
     required this.uzb,
     required this.eng,
     required this.eng1,
-    required this.eng2,
-    required this.pdfChosen,
+    required this.eng2
   });
 
   final int id;
@@ -15,14 +14,12 @@ class UzbEngModel {
   final String eng;
   final String eng1;
   final String eng2;
-  bool pdfChosen;
 
   factory UzbEngModel.fromJson(Map<String, dynamic> json) => UzbEngModel(
     id: json["_id"],
     uzb: json["uzb"],
     eng: json["eng"],
     eng1: json["eng_1"],
-    eng2: json["eng_2"],
-    pdfChosen: false,
+    eng2: json["eng_2"]
   );
 }
