@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:dictionary/services/db_service.dart';
 import 'package:dictionary/utils/my_widgets.dart';
 import 'package:flutter/material.dart';
@@ -108,11 +106,11 @@ class _AddWordScreenState extends State<AddWordScreen> {
       return;
     }
     Map<String, dynamic> body = {};
-    int id = 176064 + Random().nextInt(10000);
+    //int id = 176064 + Random().nextInt(10000);
     switch(table) {
       case "eng_uzb":
         body = {
-          "_id": id,
+          //"_id": id,
           "eng": wordController.text,
           "pron": "()",
           "uzb": definitionController.text
@@ -120,7 +118,7 @@ class _AddWordScreenState extends State<AddWordScreen> {
         break;
       case "uzb_eng":
         body = {
-          "_id": id,
+          //"_id": id,
           "uzb": wordController.text,
           "eng": definitionController.text,
           "eng_1": "",
@@ -129,7 +127,7 @@ class _AddWordScreenState extends State<AddWordScreen> {
         break;
       case "definition":
         body = {
-          "ID": id,
+          //"ID": id,
           "Word": wordController.text,
           "Type": "()",
           "Description": definitionController.text

@@ -47,7 +47,7 @@ class DBService {
     }
     try{
       if(CachedModels.database != null) {
-        String query = 'SELECT * FROM eng_uzb WHERE _id >= $start AND _id < $end AND eng like "%$word%"';
+        String query = "SELECT * FROM eng_uzb WHERE ${word.isEmpty ? "_id >= $start AND _id < $end;" : "eng like '%$word%'"}";
         sqlResponse = await CachedModels.database!.rawQuery(query);
         CachedModels.engUzbModel.addAll(engUzbModelFromJson(sqlResponse));
         return sqlResponse.isNotEmpty;
@@ -71,7 +71,7 @@ class DBService {
     }
     try{
       if(CachedModels.database != null) {
-        String query = 'SELECT * FROM uzb_eng WHERE _id >= $start AND _id < $end AND uzb like "%$word%"';
+        String query = "SELECT * FROM uzb_eng WHERE ${word.isEmpty ? "_id >= $start AND _id < $end;" : "uzb like '%$word%'"}";
         sqlResponse = await CachedModels.database!.rawQuery(query);
         CachedModels.uzbEngModel.addAll(uzbEngModelFromJson(sqlResponse));
         return sqlResponse.isNotEmpty;
@@ -95,7 +95,7 @@ class DBService {
     }
     try{
       if(CachedModels.database != null) {
-        String query = "SELECT * FROM definition WHERE ID >= $start AND ID < $end AND WORD like '%$word%'";
+        String query = "SELECT * FROM definition WHERE ${word.isEmpty ? "ID >= $start AND ID < $end;" : "WORD like '%$word%'"}";
         sqlResponse = await CachedModels.database!.rawQuery(query);
         CachedModels.definitionModel.addAll(definitionModelFromJson(sqlResponse));
         return sqlResponse.isNotEmpty;
@@ -136,6 +136,7 @@ class DBService {
         int id = 0;
         if(!wordExist) {
           id = await CachedModels.database!.insert(table, body);
+          print(id);
         }
         return id != 0;
       } else {
