@@ -26,23 +26,31 @@ class PdfService {
         children: items.map((item) {
           final document = parse("${item["text"]}");
           final String contentText = parse(document.body?.text).documentElement?.text ?? "";
-          return pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                pw.Text(
-                    "${item['name']}",
-                    style: pw.TextStyle(
-                      fontSize: 15.sp,
-                      font: myFont,
-                      fontWeight: pw.FontWeight.bold,
-                    )
-                ),
-                pw.Text(
-                    contentText,
-                    style: pw.TextStyle(fontSize: 13.sp, font: myFont)
-                ),
-                pw.SizedBox(height: 20.h)
-              ]
+          return pw.Padding(
+            padding: pw.EdgeInsets.only(bottom: 10.h),
+            child: pw.Row(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Expanded(
+                    flex: 1,
+                    child: pw.Text(
+                        "${item['name']}",
+                        style: pw.TextStyle(
+                          fontSize: 14.sp,
+                          font: myFont,
+                          fontWeight: pw.FontWeight.bold,
+                        )
+                    ),
+                  ),
+                  pw.Expanded(
+                    flex: 3,
+                    child: pw.Text(
+                        contentText,
+                        style: pw.TextStyle(fontSize: 13.sp, font: myFont)
+                    ),
+                  )
+                ]
+            )
           );
         }).toList(),
       ),
