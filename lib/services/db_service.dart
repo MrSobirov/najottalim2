@@ -38,14 +38,16 @@ class DBService {
   }
 
   Future<bool?> getEngUzb(String word, int page) async {
+    int start = 0;
+    int end = 0;
+    start = (page - 1) * 30 + page;
+    end = start + 30;
     if(page == 1) {
       CachedModels.engUzbModel.clear();
-    } else {
-      page += 30;
     }
     try{
       if(CachedModels.database != null) {
-        String query = 'SELECT * FROM eng_uzb WHERE _id >= $page AND _id < ${page+30} AND eng like "%$word%"';
+        String query = 'SELECT * FROM eng_uzb WHERE _id >= $start AND _id < $end AND eng like "%$word%"';
         sqlResponse = await CachedModels.database!.rawQuery(query);
         CachedModels.engUzbModel.addAll(engUzbModelFromJson(sqlResponse));
         return sqlResponse.isNotEmpty;
@@ -60,14 +62,16 @@ class DBService {
   }
 
   Future<bool?> getUzbEng(String word, int page) async {
+    int start = 0;
+    int end = 0;
+    start = (page - 1) * 30 + page;
+    end = start + 30;
     if(page == 1) {
       CachedModels.uzbEngModel.clear();
-    } else {
-      page += 30;
     }
     try{
       if(CachedModels.database != null) {
-        String query = 'SELECT * FROM uzb_eng WHERE _id >= $page AND _id < ${page+30} AND uzb like "%$word%"';
+        String query = 'SELECT * FROM uzb_eng WHERE _id >= $start AND _id < $end AND uzb like "%$word%"';
         sqlResponse = await CachedModels.database!.rawQuery(query);
         CachedModels.uzbEngModel.addAll(uzbEngModelFromJson(sqlResponse));
         return sqlResponse.isNotEmpty;
@@ -82,14 +86,16 @@ class DBService {
   }
 
   Future<bool?> getDefinition(String word, int page) async {
+    int start = 0;
+    int end = 0;
+    start = (page - 1) * 30 + page;
+    end = start + 30;
     if(page == 1) {
       CachedModels.definitionModel.clear();
-    } else {
-      page += 30;
     }
     try{
       if(CachedModels.database != null) {
-        String query = 'SELECT * FROM definition WHERE ID >= $page AND ID < ${page+30} AND WORD like "%$word%"';
+        String query = "SELECT * FROM definition WHERE ID >= $start AND ID < $end AND WORD like '%$word%'";
         sqlResponse = await CachedModels.database!.rawQuery(query);
         CachedModels.definitionModel.addAll(definitionModelFromJson(sqlResponse));
         return sqlResponse.isNotEmpty;
