@@ -47,6 +47,7 @@ dependencies:
   flutter_html:
   open_file:
   permission_handler:
+  connectivity_plus:
 
 dev_dependencies:
   flutter_test:

@@ -66,6 +66,9 @@ class DefinitionScreen extends StatelessWidget {
                   ),
                 ],
               ),
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
             );
           } else if (state is DefinitionLoaded) {
             return Scaffold(

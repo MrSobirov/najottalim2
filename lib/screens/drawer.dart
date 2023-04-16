@@ -1,4 +1,5 @@
 import 'package:dictionary/screens/add_word_screen.dart';
+import 'package:dictionary/screens/online/online_screen.dart';
 import 'package:dictionary/screens/pdf/pdf_page.dart';
 import 'package:dictionary/utils/my_widgets.dart';
 import 'package:flutter/material.dart';
@@ -22,9 +23,16 @@ class AppDrawer extends StatelessWidget {
             automaticallyImplyLeading: false,
           ),
           ListTile(
-              leading: const Icon(Icons.search),
-              title: const Text('Search Online'),
-              onTap: () {}),
+            leading: const Icon(Icons.search),
+            title: const Text('Search Online'),
+            onTap: () async {
+              if(await CacheKeys.hasInternet()) {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => OnlineScreen()));
+              } else {
+                MyWidgets().showToast("No connection!");
+              }
+            },
+          ),
           MyWidgets().divider(),
           ListTile(
               leading: const Icon(Icons.change_circle_outlined),
@@ -43,7 +51,8 @@ class AppDrawer extends StatelessWidget {
                   }
                   await BlocProvider.of<HomeCubit>(homeCubitCTX).getWords("", page);
                 }
-              }),
+              },
+          ),
           MyWidgets().divider(),
           ListTile(
             leading: const Icon(Icons.add),
