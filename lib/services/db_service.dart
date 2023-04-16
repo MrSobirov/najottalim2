@@ -45,7 +45,8 @@ class DBService {
     }
     try{
       if(CachedModels.database != null) {
-        sqlResponse = await CachedModels.database!.rawQuery("SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY _id) AS RowNum, * FROM eng_uzb WHERE eng_uzb.eng like '%$word%') AS RowConstrainedResult WHERE RowNum >= $page AND RowNum < ${page+30} ORDER BY RowNum");
+        String query = 'SELECT * FROM eng_uzb WHERE _id >= $page AND _id < ${page+30} AND eng like "%$word%"';
+        sqlResponse = await CachedModels.database!.rawQuery(query);
         CachedModels.engUzbModel.addAll(engUzbModelFromJson(sqlResponse));
         return sqlResponse.isNotEmpty;
       } else {
@@ -66,7 +67,8 @@ class DBService {
     }
     try{
       if(CachedModels.database != null) {
-        sqlResponse = await CachedModels.database!.rawQuery("SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY _id) AS RowNum, * FROM uzb_eng WHERE uzb_eng.uzb like '%$word%') AS RowConstrainedResult WHERE RowNum >= $page AND RowNum < ${page+30} ORDER BY RowNum");
+        String query = 'SELECT * FROM uzb_eng WHERE _id >= $page AND _id < ${page+30} AND uzb like "%$word%"';
+        sqlResponse = await CachedModels.database!.rawQuery(query);
         CachedModels.uzbEngModel.addAll(uzbEngModelFromJson(sqlResponse));
         return sqlResponse.isNotEmpty;
       } else {
@@ -87,7 +89,8 @@ class DBService {
     }
     try{
       if(CachedModels.database != null) {
-        sqlResponse = await CachedModels.database!.rawQuery("SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY ID) AS RowNum, * FROM definition WHERE definition.Word like '%$word%') AS RowConstrainedResult WHERE RowNum >= $page AND RowNum < ${page+30} ORDER BY RowNum");
+        String query = 'SELECT * FROM definition WHERE ID >= $page AND ID < ${page+30} AND WORD like "%$word%"';
+        sqlResponse = await CachedModels.database!.rawQuery(query);
         CachedModels.definitionModel.addAll(definitionModelFromJson(sqlResponse));
         return sqlResponse.isNotEmpty;
       } else {
