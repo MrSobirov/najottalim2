@@ -135,8 +135,11 @@ class DBService {
         }
         int id = 0;
         if(!wordExist) {
-          id = await CachedModels.database!.insert(table, body);
-          print(id);
+          try{
+            id = await CachedModels.database!.insert(table, body);
+          } catch (error, stacktrace) {
+            debugPrint("Add word error: $error, $stacktrace");
+          }
         }
         return id != 0;
       } else {
