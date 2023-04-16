@@ -44,7 +44,7 @@ dependencies:
   http:
   shared_preferences:
   fluttertoast:
-  flutter_html:
+  flutter_html: ^2.2.1
   open_file:
   permission_handler:
   connectivity_plus:

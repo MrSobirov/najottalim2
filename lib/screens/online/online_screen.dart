@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
 
+import '../../utils/my_dialogs.dart';
+
 class OnlineScreen extends StatelessWidget {
   const OnlineScreen({Key? key}) : super(key: key);
 
@@ -103,20 +105,27 @@ class OnlineScreen extends StatelessWidget {
                 actions: [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10.w),
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 5.h),
-                      alignment: Alignment.center,
-                      width: 38.w,
-                      height: 20.h,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
+                    child: GestureDetector(
+                      onTap: () async {
+                        String? selectedWord = await MyDialogs().voiceDialog(context);
+                        searchController.text = selectedWord ?? "";
+                        await BlocProvider.of<OnlineCubit>(cubitCTX).searchWordOnline(selectedWord ?? "");
+                      },
+                      child: Container(
+                        margin: EdgeInsets.symmetric(vertical: 5.h),
+                        alignment: Alignment.center,
+                        width: 38.w,
+                        height: 20.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
                         ),
-                      ),
-                      child: Icon(
-                        Icons.mic,
-                        color: Colors.blue,
+                        child: Icon(
+                          Icons.mic,
+                          color: Colors.blue,
+                        ),
                       ),
                     ),
                   ),
