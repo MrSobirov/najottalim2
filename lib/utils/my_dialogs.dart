@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class MyDialogs {
   void descriptionDialog(BuildContext context, String title, String description) {
@@ -33,7 +35,73 @@ class MyDialogs {
         ),
     );
   }
-  void voiceDialog(BuildContext context) {
 
+  Future<String?> voiceDialog(BuildContext context) {
+    bool listening = false;
+    String recordedWord = "";
+    stt.SpeechToText speech = stt.SpeechToText();
+    return showDialog<String>(
+      context: context,
+      builder: (dialogCTX) => WillPopScope(
+        onWillPop: () async {
+          Navigator.pop(dialogCTX, recordedWord);
+          return false;
+        },
+        child: SizedBox(
+          child: AlertDialog(
+            title: Text(
+              "Tap to speak",
+              style: TextStyle(fontSize: 13.sp),
+              textAlign: TextAlign.center,
+            ),
+            content: SizedBox(
+              height: 150.h,
+              child: StatefulBuilder(
+                builder: (recordCTR, recordSetState) {
+                  return  Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () async {
+                          bool available = await speech.initialize();
+                          if(listening) {
+                            speech.stop();
+                            listening = false;
+                            recordSetState(() {});
+                          } else {
+                            if(available ) {
+                              listening = true;
+                              speech.listen(
+                                  onResult: (SpeechRecognitionResult result) {
+                                    recordedWord = result.alternates[0].recognizedWords;
+                                    listening = false;
+                                    recordSetState(() {});
+                                  }
+                              );
+                              recordSetState(() {});
+                            }
+                            else {
+                              print("The user has denied the use of speech recognition.");
+                            }
+                          }
+                        },
+                        child: CircleAvatar(
+                          radius: 60.r,
+                          backgroundColor: Colors.blue,
+                          child: Icon(listening ? Icons.stop : Icons.mic, size: 45.w, color: Colors.white),
+                        ),
+                      ),
+                      SizedBox(height: 20.h),
+                      Text(
+                        recordedWord.isNotEmpty ? recordedWord : "Result here.....",
+                      ),
+                    ],
+                  );
+                },
+              )
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

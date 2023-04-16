@@ -104,7 +104,11 @@ class DefinitionScreen extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10.w),
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () async {
+                        String? selectedWord = await MyDialogs().voiceDialog(context);
+                        searchController.text = selectedWord ?? "";
+                        await BlocProvider.of<DefinitionCubit>(cubitCTX).getWords(selectedWord ?? "", 1);
+                      },
                       child: Container(
                         margin: EdgeInsets.symmetric(vertical: 5.h),
                         alignment: Alignment.center,

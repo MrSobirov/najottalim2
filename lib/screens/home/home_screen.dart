@@ -129,7 +129,11 @@ class HomeScreen extends StatelessWidget {
                 actions: [
                   SizedBox(width: 10.w),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () async {
+                      String? selectedWord = await MyDialogs().voiceDialog(context);
+                      searchController.text = selectedWord ?? "";
+                      await BlocProvider.of<HomeCubit>(cubitCTX).getWords(selectedWord ?? "", 1);
+                    },
                     child: Container(
                       margin: EdgeInsets.symmetric(vertical: 5.h),
                       alignment: Alignment.center,

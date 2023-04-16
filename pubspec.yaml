@@ -48,6 +48,7 @@ dependencies:
   open_file:
   permission_handler:
   connectivity_plus:
+  speech_to_text:
 
 dev_dependencies:
   flutter_test:
